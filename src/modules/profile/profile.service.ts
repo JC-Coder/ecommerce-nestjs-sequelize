@@ -1,7 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Profile } from '../../common/database/models/profile.model';
-import { CreateProfileDto } from './dto/profile.dto';
+import { CreateProfileDto, UpdateProfileDto } from './dto/profile.dto';
 import { User } from '../../common/database/models/user.model';
 import { UserService } from '../user/user.service';
 
@@ -21,15 +25,31 @@ export class ProfileService {
       throw new NotFoundException(`User not found `);
     }
 
-    const [profile] = await this.profileModel.upsert(
-      { userId, bio },
-      { returning: true },
-    );
+    const existingProfile = await this.profileModel.count();
 
-    return profile;
+    if (existingProfile > 0) {
+      throw new UnprocessableEntityException(
+        'Profile exist for user with id : ' + userId,
+      );
+    }
+
+    return await this.profileModel.create({ userId, bio });
   }
 
   async getProfiles(): Promise<Profile[]> {
     return await this.profileModel.findAll({ include: [User] });
+  }
+
+  async updateProfile(id: string, payload: UpdateProfileDto): Promise<void> {
+    const { firstName, lastName, bio } = payload;
+
+    await this.profileModel.update(
+      { firstName, lastName, bio },
+      {
+        where: {
+          id,
+        },
+      },
+    );
   }
 }

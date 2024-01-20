@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { ProfileService } from './profile.service';
-import { CreateProfileDto } from './dto/profile.dto';
+import { CreateProfileDto, UpdateProfileDto } from './dto/profile.dto';
 
 @Controller('profile')
 export class ProfileController {
@@ -13,6 +13,14 @@ export class ProfileController {
 
   @Get()
   async getProfiles() {
-    return await this.profileService.getProfiles()
+    return await this.profileService.getProfiles();
+  }
+
+  @Patch(':id')
+  async updateProfile(
+    @Param('id') id: string,
+    @Body() payload: UpdateProfileDto,
+  ) {
+    return await this.profileService.updateProfile(id, payload);
   }
 }

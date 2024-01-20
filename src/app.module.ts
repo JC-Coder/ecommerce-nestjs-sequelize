@@ -1,10 +1,8 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { ProductsModule } from './products/products.module';
+import { ProductsModule } from './modules/products/products.module';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { UserModule } from './user/user.module';
-import { ProfileModule } from './profile/profile.module';
+import { UserModule } from './modules/user/user.module';
+import { ProfileModule } from './modules/profile/profile.module';
 
 @Module({
   imports: [
@@ -17,13 +15,14 @@ import { ProfileModule } from './profile/profile.module';
       password: 'postgres',
       database: 'sample_db',
       autoLoadModels: true,
+      logging: false,
       // synchronize: true,
     }),
     UserModule,
     ProfileModule,
     ProductsModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

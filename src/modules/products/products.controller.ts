@@ -8,7 +8,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { Product } from '../database/models/product.model';
+import { Product } from '../../common/database/models/product.model';
 
 @Controller('products')
 export class ProductsController {

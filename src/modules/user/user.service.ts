@@ -59,4 +59,20 @@ export class UserService {
 
     await user.$add('orders', product);
   }
+
+  async removeProductFromUserOrder(
+    userId: number,
+    productId: number,
+  ): Promise<void> {
+    const [user, product] = await Promise.all([
+      this.userModel.findByPk(userId),
+      this.productService.findOne(productId),
+    ]);
+
+    if (!user || !product) {
+      throw new NotFoundException(`${!user ? 'user' : 'product'} not found`);
+    }
+
+    await user.$remove('orders', product);
+  }
 }

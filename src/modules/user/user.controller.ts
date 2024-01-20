@@ -36,4 +36,12 @@ export class UserController {
   ) {
     return await this.userService.addProductToUserOrder(userId, productId);
   }
+
+  @Delete(':userId/orders/:productId')
+  async removeProductFromUserOrder(
+    @Param('userId') userId: number,
+    @Param('productId') productId: number,
+  ) {
+    return await this.userService.removeProductFromUserOrder(userId, productId);
+  }
 }

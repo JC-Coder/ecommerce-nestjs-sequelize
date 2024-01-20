@@ -1,4 +1,11 @@
-import { Column, DataType, Default, Model } from 'sequelize-typescript';
+import {
+  AllowNull,
+  Column,
+  DataType,
+  Default,
+  DeletedAt,
+  Model,
+} from 'sequelize-typescript';
 
 export class BaseModel extends Model {
   @Column({
@@ -12,4 +19,16 @@ export class BaseModel extends Model {
     type: DataType.BIGINT,
   })
   createdAt?: string;
+
+  @Default(new Date().getTime().toString())
+  @AllowNull(true)
+  @Column({
+    type: DataType.BIGINT,
+  })
+  updatedAt?: string;
+
+  @AllowNull(true)
+  @DeletedAt
+  @Column
+  deletedAt?: Date;
 }

@@ -12,5 +12,14 @@ module.exports = function baseModelMigration(Sequelize) {
       defaultValue: new Date().getTime().toString(),
       allowNull: false,
     },
+    updatedAt: {
+      type: Sequelize.BIGINT,
+      defaultValue: new Date().getTime().toString(),
+      allowNull: true,
+    },
+    deletedAt: {
+      type: Sequelize.DATE,
+      allowNull: true,
+    },
   };
 };

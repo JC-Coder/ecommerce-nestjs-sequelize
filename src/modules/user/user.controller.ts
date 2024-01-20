@@ -28,4 +28,12 @@ export class UserController {
   async deleteById(@Param('id') id: number) {
     return await this.userService.deleteById(id);
   }
+
+  @Post(':userId/orders/:productId')
+  async addProductToUserOrder(
+    @Param('userId') userId: number,
+    @Param('productId') productId: number,
+  ) {
+    return await this.userService.addProductToUserOrder(userId, productId);
+  }
 }

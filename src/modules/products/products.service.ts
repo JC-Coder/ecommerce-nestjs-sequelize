@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Product } from '../../common/database/models/product.model';
+import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
+import { User } from '../../common/database/models/user.model';
 
 @Injectable()
 export class ProductsService {
@@ -8,29 +10,33 @@ export class ProductsService {
     @InjectModel(Product) private readonly productModel: typeof Product,
   ) {}
 
-  async create(productData): Promise<Product> {
-    const product = new Product(productData);
-    return await product.save();
+  async create(payload: CreateProductDto): Promise<Product> {
+    return await this.productModel.create({ ...payload });
   }
 
   async findAll(): Promise<Product[]> {
-    return this.productModel.findAll();
+    return this.productModel.findAll({
+      include: [
+        {
+          model: User,
+          as: 'owner',
+        },
+      ],
+    });
   }
 
   async findOne(id: number): Promise<Product> {
-    return this.productModel.findOne({ where: { id } });
+    return this.productModel.findOne({
+      where: { id },
+      include: [{ model: User, as: 'owner' }],
+    });
   }
 
-  async update(id: number, productData): Promise<[number, Product[]]> {
-    const [affectedCount, affectedRows] = await this.productModel.update(
-      productData,
-      {
-        where: { id },
-        returning: true,
-      },
-    );
-
-    return [affectedCount, affectedRows as Product[]];
+  async update(id: number, payload: UpdateProductDto): Promise<void> {
+    await this.productModel.update(payload, {
+      where: { id },
+      returning: true,
+    });
   }
 
   async remove(id: number): Promise<number> {
